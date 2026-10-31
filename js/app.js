@@ -97,14 +97,22 @@ function renderLine(line, notation, semitones) {
   const font = window.getComputedStyle(lyricRow).font;
   measureCtx.font = font;
 
+  // separación mínima entre acordes consecutivos (px) para que nunca queden
+  // uno encima del otro cuando van "sueltos" al final de una línea
+  const MIN_CHORD_GAP = 10;
+  let cursorRight = -Infinity;
+
   for (const slot of chordSlots) {
     const chordEl = document.createElement('span');
     chordEl.className = 'chord';
     const transposed = slot.chords.map(c => transposeChordString(c, semitones, notation));
     chordEl.textContent = transposed.join(' ');
-    const leftPx = measureCtx.measureText(lyricText.slice(0, slot.pos)).width;
+    chordRow.appendChild(chordEl); // se agrega antes de medir para poder leer su ancho real
+
+    let leftPx = measureCtx.measureText(lyricText.slice(0, slot.pos)).width;
+    if (leftPx < cursorRight) leftPx = cursorRight;
     chordEl.style.left = leftPx + 'px';
-    chordRow.appendChild(chordEl);
+    cursorRight = leftPx + chordEl.offsetWidth + MIN_CHORD_GAP;
   }
 
   return null; // ya quedó insertado

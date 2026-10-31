@@ -11,6 +11,7 @@
   --bg-sheet: #1a1713;
   --text: #f4efe6;
   --text-dim: #a89d8c;
+  --text-instrumental: #c9bfab;
   --chord-color: #e8b339;
   --section-color: #6fd6b4;
   --accent: #e8b339;
@@ -27,6 +28,7 @@
   --bg-sheet: #fffdf9;
   --text: #241f17;
   --text-dim: #726b5c;
+  --text-instrumental: #4a4336;
   --chord-color: #a05a00;
   --section-color: #0d7a5e;
   --accent: #a05a00;
@@ -236,7 +238,8 @@ header {
 
 .instrumental {
   font-family: "SF Mono", "Courier New", monospace;
-  color: var(--text-dim);
+  font-weight: 600;
+  color: var(--text-instrumental);
   font-size: calc(0.95rem * var(--font-scale));
   margin: 6px 0 16px;
   letter-spacing: 0.01em;
