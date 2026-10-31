@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Cancionero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500;1,600&family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="title-block">
+        <h1 id="song-title">Cargando…</h1>
+        <p id="song-author"></p>
+        <div class="badges">
+          <span id="key-badge" class="badge"></span>
+          <span id="review-badge" class="badge review">Revisar letra</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="list-btn" class="icon-btn" title="Ver todas las canciones">☰</button>
+        <button id="theme-toggle" class="icon-btn" title="Cambiar tema">◐</button>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="transpose-down" title="Bajar medio tono">−</button>
+        <span class="toolbar-label">Tono</span>
+        <button id="transpose-up" title="Subir medio tono">+</button>
+      </div>
+      <button id="transpose-reset" class="pill-btn" title="Volver al tono original">Original</button>
+      <div class="toolbar-group">
+        <button id="font-down" title="Letra más chica">A−</button>
+        <span class="toolbar-label">Letra</span>
+        <button id="font-up" title="Letra más grande">A+</button>
+      </div>
+      <select id="font-family-select" class="font-select" title="Tipo de letra">
+        <option value="inter">Sans (Inter)</option>
+        <option value="atkinson">Legible (Atkinson)</option>
+        <option value="georgia">Serif (Georgia)</option>
+        <option value="mono">Monoespaciada</option>
+      </select>
+    </div>
+
+    <div id="sheet-wrapper">
+      <button id="prev-btn" class="nav-btn" title="Canción anterior">‹</button>
+      <div id="sheet"></div>
+      <button id="next-btn" class="nav-btn" title="Canción siguiente">›</button>
+    </div>
+
+    <footer>
+      <span id="counter"></span> · deslizá o usá las flechas para cambiar de canción
+    </footer>
+  </div>
+
+  <div id="list-overlay" class="overlay">
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <h2>Canciones</h2>
+        <button id="list-close" class="icon-btn">✕</button>
+      </div>
+      <div id="song-list"></div>
+    </div>
+  </div>
+
+  <script src="js/chords.js"></script>
+  <script src="js/songs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
