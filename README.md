@@ -38,6 +38,20 @@ El acorde va pegado justo antes de la palabra o sílaba donde se toca, entre cor
 
 Agregá el objeto nuevo dentro del array `SONGS`, con una coma después del anterior, y listo — aparece automáticamente en la lista y en la navegación.
 
+## Después de editar css/style.css o algún archivo de js/
+
+El navegador guarda estos archivos en caché, así que un cambio puede no notarse hasta que el visitante fuerce una recarga. Para evitar eso, subí el número de versión (`?v=2`, `?v=3`, etc.) en las líneas correspondientes de `index.html`:
+
+```html
+<link rel="stylesheet" href="css/style.css?v=3" />
+...
+<script src="js/chords.js?v=3"></script>
+<script src="js/songs.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
+```
+
+Con eso el navegador sabe que debe bajar la versión nueva sí o sí.
+
 ## Pendiente
 
 La canción "Abre Mis Ojos oh Cristo Señor" tiene un `{{completar}}` en la primera estrofa: en la foto original esa parte de la letra estaba tapada con un resaltador. Hay que reemplazar ese texto por la letra correcta directo en `js/songs.js`.
