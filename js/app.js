@@ -129,6 +129,8 @@ function renderLine(line, notation, semitones) {
   // uno encima del otro cuando van "sueltos" al final de una línea
   const MIN_CHORD_GAP = 10;
   let cursorRight = -Infinity;
+  const chordEls = [];
+  const leftPositions = [];
 
   for (const slot of chordSlots) {
     const chordEl = document.createElement('span');
@@ -140,7 +142,27 @@ function renderLine(line, notation, semitones) {
     let leftPx = measureCtx.measureText(lyricText.slice(0, slot.pos)).width;
     if (leftPx < cursorRight) leftPx = cursorRight;
     chordEl.style.left = leftPx + 'px';
+    chordEls.push(chordEl);
+    leftPositions.push(leftPx);
     cursorRight = leftPx + chordEl.offsetWidth + MIN_CHORD_GAP;
+  }
+
+  // si la letra o los acordes son más anchos que el espacio disponible, se
+  // achica proporcionalmente toda la línea (letra + acordes) para que se
+  // vea completa sin necesidad de hacer scroll horizontal
+  const lyricWidth = measureCtx.measureText(lyricText).width;
+  const naturalWidth = Math.max(lyricWidth, cursorRight === -Infinity ? 0 : cursorRight);
+  const sheetStyle = window.getComputedStyle(els.sheet);
+  const availableWidth = els.sheet.clientWidth
+    - parseFloat(sheetStyle.paddingLeft)
+    - parseFloat(sheetStyle.paddingRight);
+
+  if (availableWidth > 0 && naturalWidth > availableWidth) {
+    const scale = (availableWidth / naturalWidth) * 0.985; // pequeño margen de seguridad
+    wrap.style.setProperty('--font-scale', (state.fontScale * scale).toFixed(4));
+    chordEls.forEach((chordEl, i) => {
+      chordEl.style.left = (leftPositions[i] * scale) + 'px';
+    });
   }
 
   return null; // ya quedó insertado

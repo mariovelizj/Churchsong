@@ -251,8 +251,7 @@ header {
 
 .line-block {
   margin-bottom: calc(1.5em * var(--font-scale));
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
   width: fit-content;
   max-width: 100%;
 }
