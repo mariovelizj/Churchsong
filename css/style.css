@@ -223,12 +223,7 @@ header {
   padding: 28px 22px 130px;
   -webkit-overflow-scrolling: touch;
   background: var(--bg-sheet);
-  display: flex;
-  flex-direction: column;
 }
-#sheet.align-left { align-items: flex-start; }
-#sheet.align-center { align-items: center; }
-#sheet.align-right { align-items: flex-end; }
 
 .section-label {
   font-family: var(--font-display);
@@ -238,6 +233,8 @@ header {
   color: var(--section-color);
   font-size: calc(1.05rem * var(--font-scale));
   margin: 26px 0 10px;
+  width: fit-content;
+  max-width: 100%;
 }
 .section-label:first-child { margin-top: 0; }
 
@@ -248,14 +245,29 @@ header {
   font-size: calc(0.95rem * var(--font-scale));
   margin: 6px 0 16px;
   letter-spacing: 0.01em;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .line-block {
   margin-bottom: calc(1.5em * var(--font-scale));
   overflow-x: auto;
   overflow-y: hidden;
+  width: fit-content;
   max-width: 100%;
 }
+
+#sheet.align-left .section-label,
+#sheet.align-left .instrumental,
+#sheet.align-left .line-block { margin-left: 0; margin-right: auto; }
+
+#sheet.align-center .section-label,
+#sheet.align-center .instrumental,
+#sheet.align-center .line-block { margin-left: auto; margin-right: auto; }
+
+#sheet.align-right .section-label,
+#sheet.align-right .instrumental,
+#sheet.align-right .line-block { margin-left: auto; margin-right: 0; }
 
 .chord-row {
   position: relative;
