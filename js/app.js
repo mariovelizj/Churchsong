@@ -157,13 +157,23 @@ function renderLine(line, notation, semitones) {
     - parseFloat(sheetStyle.paddingLeft)
     - parseFloat(sheetStyle.paddingRight);
 
+  let finalWidth = naturalWidth;
+
   if (availableWidth > 0 && naturalWidth > availableWidth) {
     const scale = (availableWidth / naturalWidth) * 0.985; // pequeño margen de seguridad
     wrap.style.setProperty('--font-scale', (state.fontScale * scale).toFixed(4));
     chordEls.forEach((chordEl, i) => {
       chordEl.style.left = (leftPositions[i] * scale) + 'px';
     });
+    finalWidth = naturalWidth * scale;
   }
+
+  // el ancho real de la línea (letra + acordes, incluidos los que quedan
+  // "sueltos" después de la última palabra) no siempre coincide con el
+  // ancho intrínseco de la letra sola, porque los acordes están posicionados
+  // en absoluto y no cuentan para el "fit-content" del bloque. Se fija el
+  // ancho explícito acá para que la línea nunca se corte ni quede descentrada.
+  wrap.style.width = Math.ceil(finalWidth) + 'px';
 
   return null; // ya quedó insertado
 }
