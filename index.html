@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500;1,600&family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=5" />
+<link rel="stylesheet" href="css/style.css?v=6" />
 </head>
 <body>
   <div id="app">
@@ -44,9 +44,15 @@
         <option value="georgia">Serif (Georgia)</option>
         <option value="mono">Monoespaciada</option>
       </select>
+      <select id="align-select" class="font-select" title="Alineación del texto">
+        <option value="left">Alinear: izquierda</option>
+        <option value="center">Alinear: centro</option>
+        <option value="right">Alinear: derecha</option>
+      </select>
       <div class="toolbar-group">
-        <button id="autoscroll-down" title="Autoscroll más lento">−</button>
         <button id="autoscroll-toggle" class="autoscroll-toggle-btn" title="Activar autoscroll">▶</button>
+        <button id="autoscroll-down" title="Autoscroll más lento">−</button>
+        <span id="autoscroll-speed-label" class="toolbar-label" title="Velocidad de autoscroll">4</span>
         <button id="autoscroll-up" title="Autoscroll más rápido">+</button>
       </div>
     </div>
@@ -75,8 +81,8 @@
     </div>
   </div>
 
-  <script src="js/chords.js?v=5"></script>
-  <script src="js/songs.js?v=5"></script>
-  <script src="js/app.js?v=5"></script>
+  <script src="js/chords.js?v=6"></script>
+  <script src="js/songs.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
 </body>
 </html>

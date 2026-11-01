@@ -30,6 +30,7 @@ const state = {
   autoscrollOn: false,
   search: '',
   activeTag: null,
+  textAlign: localStorage.getItem('cancionero-align') || 'left',
 };
 
 let autoscrollTimer = null;
@@ -52,6 +53,7 @@ const els = {
   fontDown: document.getElementById('font-down'),
   fontUp: document.getElementById('font-up'),
   fontFamilySelect: document.getElementById('font-family-select'),
+  alignSelect: document.getElementById('align-select'),
   themeToggle: document.getElementById('theme-toggle'),
   listBtn: document.getElementById('list-btn'),
   listOverlay: document.getElementById('list-overlay'),
@@ -64,6 +66,7 @@ const els = {
   autoscrollToggle: document.getElementById('autoscroll-toggle'),
   autoscrollDown: document.getElementById('autoscroll-down'),
   autoscrollUp: document.getElementById('autoscroll-up'),
+  autoscrollSpeedLabel: document.getElementById('autoscroll-speed-label'),
 };
 
 function currentSong() {
@@ -234,6 +237,18 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', state.theme);
 }
 
+function applyTextAlign() {
+  els.sheet.classList.remove('align-left', 'align-center', 'align-right');
+  els.sheet.classList.add('align-' + state.textAlign);
+  els.alignSelect.value = state.textAlign;
+}
+
+function changeTextAlign(value) {
+  state.textAlign = value;
+  localStorage.setItem('cancionero-align', value);
+  applyTextAlign();
+}
+
 function normalizeText(str) {
   return (str || '')
     .normalize('NFD')
@@ -315,6 +330,7 @@ function applyAutoscrollUI() {
   els.autoscrollToggle.textContent = state.autoscrollOn ? '⏸' : '▶';
   els.autoscrollToggle.classList.toggle('active', state.autoscrollOn);
   els.autoscrollToggle.title = state.autoscrollOn ? 'Pausar autoscroll' : 'Activar autoscroll';
+  els.autoscrollSpeedLabel.textContent = state.autoscrollSpeed;
 }
 
 function startAutoscroll() {
@@ -343,6 +359,7 @@ function toggleAutoscroll() {
 function changeAutoscrollSpeed(delta) {
   state.autoscrollSpeed = Math.min(AUTOSCROLL_MAX, Math.max(AUTOSCROLL_MIN, state.autoscrollSpeed + delta));
   localStorage.setItem('cancionero-autoscroll-speed', state.autoscrollSpeed);
+  applyAutoscrollUI();
 }
 
 // --- eventos ---
@@ -354,6 +371,7 @@ els.transposeReset.addEventListener('click', resetTranspose);
 els.fontUp.addEventListener('click', () => changeFont(0.1));
 els.fontDown.addEventListener('click', () => changeFont(-0.1));
 els.fontFamilySelect.addEventListener('change', (e) => changeFontFamily(e.target.value));
+els.alignSelect.addEventListener('change', (e) => changeTextAlign(e.target.value));
 els.themeToggle.addEventListener('click', toggleTheme);
 els.listBtn.addEventListener('click', openList);
 els.listClose.addEventListener('click', closeList);
@@ -395,5 +413,6 @@ els.sheet.addEventListener('touchend', (e) => {
 // init
 document.documentElement.setAttribute('data-theme', state.theme);
 applyFontFamily();
+applyTextAlign();
 applyAutoscrollUI();
 renderSong();
