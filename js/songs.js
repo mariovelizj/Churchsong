@@ -1,6 +1,7 @@
 /* songs.js
    Banco de canciones. Cada canción:
    - id, title, author (opcional), key (tono original), notation ('es' | 'en')
+   - tags: array de categorías para filtrar en el buscador (ver TAGS en app.js)
    - blocks: array de bloques tipo 'section' | 'line' | 'instrumental'
    Sintaxis de acordes en 'line': formato ChordPro -> [Acorde]letra pegada al acorde
 */
@@ -12,6 +13,7 @@ const SONGS = [
     author: '',
     key: 'MI',
     notation: 'es',
+    tags: ['adoracion'],
     needsReview: true, // una parte de la letra estaba tapada en la foto original
     blocks: [
       { type: 'section', label: 'Estrofa' },
@@ -34,6 +36,7 @@ const SONGS = [
     author: 'Jesús Adrián Romero',
     key: 'E',
     notation: 'en',
+    tags: ['ofrenda', 'adoracion'],
     needsReview: false,
     blocks: [
       { type: 'instrumental', text: 'Intro: // E - A - E - A //' },
@@ -93,6 +96,7 @@ const SONGS = [
     author: 'Marcos Vidal',
     key: 'G',
     notation: 'en',
+    tags: ['adoracion', 'alabanza'],
     needsReview: false,
     blocks: [
       { type: 'instrumental', text: 'Intro: /// C/A - G/B - B/D# Em7 /// Am D G D' },
@@ -136,6 +140,7 @@ const SONGS = [
     author: 'Semilla de Mostaza',
     key: 'A',
     notation: 'en',
+    tags: ['alabanza', 'entrada'],
     needsReview: false,
     blocks: [
       { type: 'instrumental', text: 'Intro: // Amaj7 - D2/A // (x8)   luego Dmaj7 - C#m7 - D/E' },
@@ -171,6 +176,7 @@ const SONGS = [
     author: 'Himno 471',
     key: 'E',
     notation: 'en',
+    tags: ['alabanza'],
     needsReview: false,
     blocks: [
       { type: 'section', label: 'Estrofa 1' },

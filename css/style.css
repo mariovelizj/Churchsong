@@ -347,7 +347,7 @@ footer {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 15px 12px;
   border: none;
@@ -361,7 +361,67 @@ footer {
 }
 .list-item:active { background: var(--border-soft); }
 .list-item.active { color: var(--accent); font-weight: 700; }
-.list-item-key { color: var(--text-dim); font-size: 0.88rem; }
+.list-item-main { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.list-item-key { color: var(--text-dim); font-size: 0.88rem; flex-shrink: 0; padding-top: 2px; }
+.list-item-tags { display: flex; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+.list-item-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--border-soft);
+  color: var(--text-dim);
+  text-transform: capitalize;
+}
+
+/* ---- buscador y filtros de etiqueta ---- */
+.search-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg-sheet);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: var(--font-body);
+  padding: 11px 14px;
+  border-radius: 13px;
+  margin-bottom: 10px;
+  -webkit-appearance: none;
+}
+.search-input::placeholder { color: var(--text-dim); }
+.search-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.tag-filters {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.tag-chip {
+  border: 1px solid var(--border);
+  background: var(--bg-sheet);
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 7px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+.tag-chip.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+.list-empty {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  padding: 24px 0;
+}
+
+/* ---- autoscroll ---- */
+.autoscroll-toggle-btn.active {
+  background: var(--accent);
+  color: var(--bg);
+}
 
 @media (min-width: 700px) {
   .lyric-line { font-size: calc(1.7rem * var(--font-scale)); }

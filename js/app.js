@@ -7,13 +7,32 @@ const FONT_FAMILIES = {
   mono: '"Space Mono", "SF Mono", "Courier New", monospace',
 };
 
+// etiquetas disponibles para filtrar canciones (coinciden con los `tags` de songs.js)
+const TAGS = ['adoracion', 'alabanza', 'ofrenda', 'entrada', 'comunion'];
+const TAG_LABELS = {
+  adoracion: 'Adoración',
+  alabanza: 'Alabanza',
+  ofrenda: 'Ofrenda',
+  entrada: 'Entrada',
+  comunion: 'Comunión',
+};
+
+const AUTOSCROLL_MIN = 1;
+const AUTOSCROLL_MAX = 10;
+
 const state = {
   songIndex: 0,
   transposeBySong: {}, // { songId: semitonos }
   theme: localStorage.getItem('cancionero-theme') || 'light',
   fontScale: parseFloat(localStorage.getItem('cancionero-fontscale') || '1'),
   fontFamily: localStorage.getItem('cancionero-fontfamily') || 'inter',
+  autoscrollSpeed: parseInt(localStorage.getItem('cancionero-autoscroll-speed') || '4', 10),
+  autoscrollOn: false,
+  search: '',
+  activeTag: null,
 };
+
+let autoscrollTimer = null;
 
 const measureCanvas = document.createElement('canvas');
 const measureCtx = measureCanvas.getContext('2d');
@@ -38,7 +57,13 @@ const els = {
   listOverlay: document.getElementById('list-overlay'),
   listClose: document.getElementById('list-close'),
   songList: document.getElementById('song-list'),
+  songListEmpty: document.getElementById('song-list-empty'),
+  songSearch: document.getElementById('song-search'),
+  tagFilters: document.getElementById('tag-filters'),
   counter: document.getElementById('counter'),
+  autoscrollToggle: document.getElementById('autoscroll-toggle'),
+  autoscrollDown: document.getElementById('autoscroll-down'),
+  autoscrollUp: document.getElementById('autoscroll-up'),
 };
 
 function currentSong() {
@@ -152,6 +177,7 @@ function renderSong() {
 
   els.counter.textContent = `${state.songIndex + 1} / ${SONGS.length}`;
   els.sheet.scrollTop = 0;
+  stopAutoscroll();
   applyFontScale();
   renderList();
 }
@@ -208,12 +234,68 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', state.theme);
 }
 
+function normalizeText(str) {
+  return (str || '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function matchesFilters(song) {
+  if (state.activeTag && !(song.tags || []).includes(state.activeTag)) return false;
+  if (state.search) {
+    const q = normalizeText(state.search);
+    const haystack = normalizeText(song.title + ' ' + (song.author || ''));
+    if (!haystack.includes(q)) return false;
+  }
+  return true;
+}
+
+function renderTagFilters() {
+  els.tagFilters.innerHTML = '';
+  const allChip = document.createElement('button');
+  allChip.className = 'tag-chip' + (state.activeTag === null ? ' active' : '');
+  allChip.textContent = 'Todas';
+  allChip.addEventListener('click', () => {
+    state.activeTag = null;
+    renderList();
+  });
+  els.tagFilters.appendChild(allChip);
+
+  TAGS.forEach(tag => {
+    const chip = document.createElement('button');
+    chip.className = 'tag-chip' + (state.activeTag === tag ? ' active' : '');
+    chip.textContent = TAG_LABELS[tag] || tag;
+    chip.addEventListener('click', () => {
+      state.activeTag = state.activeTag === tag ? null : tag;
+      renderList();
+    });
+    els.tagFilters.appendChild(chip);
+  });
+}
+
 function renderList() {
+  renderTagFilters();
   els.songList.innerHTML = '';
-  SONGS.forEach((s, i) => {
+  const visible = SONGS
+    .map((s, i) => ({ s, i }))
+    .filter(({ s }) => matchesFilters(s));
+
+  els.songListEmpty.style.display = visible.length === 0 ? '' : 'none';
+
+  visible.forEach(({ s, i }) => {
     const item = document.createElement('button');
     item.className = 'list-item' + (i === state.songIndex ? ' active' : '');
-    item.innerHTML = `<span class="list-item-title">${s.title}</span><span class="list-item-key">${s.key}</span>`;
+    const tagsHtml = (s.tags || [])
+      .map(t => `<span class="list-item-tag">${TAG_LABELS[t] || t}</span>`)
+      .join('');
+    item.innerHTML = `
+      <span class="list-item-main">
+        <span class="list-item-title">${s.title}</span>
+        <span class="list-item-tags">${tagsHtml}</span>
+      </span>
+      <span class="list-item-key">${s.key}</span>`;
     item.addEventListener('click', () => {
       goTo(i);
       closeList();
@@ -222,8 +304,46 @@ function renderList() {
   });
 }
 
-function openList() { els.listOverlay.classList.add('open'); }
+function openList() {
+  els.listOverlay.classList.add('open');
+  els.songSearch.focus();
+}
 function closeList() { els.listOverlay.classList.remove('open'); }
+
+// --- autoscroll ---
+function applyAutoscrollUI() {
+  els.autoscrollToggle.textContent = state.autoscrollOn ? '⏸' : '▶';
+  els.autoscrollToggle.classList.toggle('active', state.autoscrollOn);
+  els.autoscrollToggle.title = state.autoscrollOn ? 'Pausar autoscroll' : 'Activar autoscroll';
+}
+
+function startAutoscroll() {
+  if (autoscrollTimer) return;
+  state.autoscrollOn = true;
+  applyAutoscrollUI();
+  autoscrollTimer = setInterval(() => {
+    els.sheet.scrollTop += state.autoscrollSpeed * 0.5;
+  }, 50);
+}
+
+function stopAutoscroll() {
+  if (autoscrollTimer) {
+    clearInterval(autoscrollTimer);
+    autoscrollTimer = null;
+  }
+  state.autoscrollOn = false;
+  applyAutoscrollUI();
+}
+
+function toggleAutoscroll() {
+  if (state.autoscrollOn) stopAutoscroll();
+  else startAutoscroll();
+}
+
+function changeAutoscrollSpeed(delta) {
+  state.autoscrollSpeed = Math.min(AUTOSCROLL_MAX, Math.max(AUTOSCROLL_MIN, state.autoscrollSpeed + delta));
+  localStorage.setItem('cancionero-autoscroll-speed', state.autoscrollSpeed);
+}
 
 // --- eventos ---
 els.prevBtn.addEventListener('click', prevSong);
@@ -238,6 +358,13 @@ els.themeToggle.addEventListener('click', toggleTheme);
 els.listBtn.addEventListener('click', openList);
 els.listClose.addEventListener('click', closeList);
 els.listOverlay.addEventListener('click', (e) => { if (e.target === els.listOverlay) closeList(); });
+els.songSearch.addEventListener('input', (e) => {
+  state.search = e.target.value;
+  renderList();
+});
+els.autoscrollToggle.addEventListener('click', toggleAutoscroll);
+els.autoscrollDown.addEventListener('click', () => changeAutoscrollSpeed(-1));
+els.autoscrollUp.addEventListener('click', () => changeAutoscrollSpeed(1));
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') nextSong();
@@ -251,6 +378,7 @@ let touchStartY = null;
 els.sheet.addEventListener('touchstart', (e) => {
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
+  if (state.autoscrollOn) stopAutoscroll(); // tocar la letra pausa el autoscroll
 }, { passive: true });
 
 els.sheet.addEventListener('touchend', (e) => {
@@ -267,4 +395,5 @@ els.sheet.addEventListener('touchend', (e) => {
 // init
 document.documentElement.setAttribute('data-theme', state.theme);
 applyFontFamily();
+applyAutoscrollUI();
 renderSong();

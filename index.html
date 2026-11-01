@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500;1,600&family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=4" />
+<link rel="stylesheet" href="css/style.css?v=5" />
 </head>
 <body>
   <div id="app">
@@ -44,6 +44,11 @@
         <option value="georgia">Serif (Georgia)</option>
         <option value="mono">Monoespaciada</option>
       </select>
+      <div class="toolbar-group">
+        <button id="autoscroll-down" title="Autoscroll más lento">−</button>
+        <button id="autoscroll-toggle" class="autoscroll-toggle-btn" title="Activar autoscroll">▶</button>
+        <button id="autoscroll-up" title="Autoscroll más rápido">+</button>
+      </div>
     </div>
 
     <div id="sheet-wrapper">
@@ -63,12 +68,15 @@
         <h2>Canciones</h2>
         <button id="list-close" class="icon-btn">✕</button>
       </div>
+      <input id="song-search" class="search-input" type="search" placeholder="Buscar por título o autor…" autocomplete="off" />
+      <div id="tag-filters" class="tag-filters"></div>
       <div id="song-list"></div>
+      <p id="song-list-empty" class="list-empty" style="display:none;">No encontré canciones con esa búsqueda.</p>
     </div>
   </div>
 
-  <script src="js/chords.js?v=4"></script>
-  <script src="js/songs.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/chords.js?v=5"></script>
+  <script src="js/songs.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>
